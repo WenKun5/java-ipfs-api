@@ -428,6 +428,48 @@ public class IPFS {
         }
     }
 
+    // MFS mutable files system
+    /*
+        ipfs files chcid [<path>]      - Change the cid version or hash function of the root node of a given path.
+        ipfs files cp <source> <dest>  - Copy files into mfs.
+        ipfs files flush [<path>]      - Flush a given path's data to disk.
+        ipfs files ls [<path>]         - List directories in the local mutable namespace.
+        ipfs files mkdir <path>        - Make directories.
+        ipfs files mv <source> <dest>  - Move files.
+        ipfs files read <path>         - Read a file in a given mfs.
+        ipfs files rm <path>...        - Remove a file.
+        ipfs files stat <path>         - Display file status.
+        ipfs files write <path> <data> - Write to a mutable file in a given filesystem.
+    */
+    public class Files {
+        /* curl "http://localhost:5001/api/v0/files/read?arg=<path>&offset=<value>&count=<value>" */
+        public Map get(String path) throws IOException {
+            return retrieveMap("files/read?arg=" + path + "recursive=true");
+        }
+
+        public Map add(String path) throws IOException {
+            return retrieveMap("files/write?arg=" + path + "&create=true&stream-channels=true");
+        }
+
+        public Map rm(String path) throws IOException {
+            //TODO: If path is a directories, recursive is true, else recursive is false.
+            return retrieveMap("files/rm?arg=" + path + "recursive=true");
+        }
+
+        public Map mv(String source, String dest) throws IOException {
+            return retrieveMap("files/mv?arg=" + source + "&arg=" + dest);
+        }
+
+        public Map mkdir(String path) throws IOException {
+            return retrieveMap("files/mkdir?arg=" + path + "&parents=false");
+        }
+
+        /* List directories in the local mutable namespace, list all info as default.*/
+        public Map ls(String path) throws IOException {
+            return retrieveMap("files/ls?arg=" + path + "&l=true");
+        }
+    }
+
     public class File {
         public Map ls(Multihash path) throws IOException {
             return retrieveMap("file/ls?arg=" + path);
